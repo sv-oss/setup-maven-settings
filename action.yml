@@ -1,0 +1,15 @@
+name: 'Setup Maven Settings'
+description: 'Setup maven settings.xml'
+inputs:
+  activeProfiles:
+    description: 'List of active profiles in json array format, eg: ["profile1,profile2"]'
+    required: false
+  profiles:
+    description: 'List of profiles in json format, eg: [{ "id": "profile1", "repositories": [{ "id": "repository1", "url": "url1" }, { "id": "repository2", "url": "url2" }] }]'
+    required: false
+  servers:
+    description: 'List of servers in json format, eg: [{ "id": "profile1", "username": "username", "password": "password" }]'
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
