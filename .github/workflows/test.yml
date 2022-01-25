@@ -1,0 +1,41 @@
+name: 'build-test'
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          activeProfiles: |
+            ["github"]
+          profiles: |
+            [
+              { 
+                "id": "github", 
+                "repositories": {
+                  "repository": [
+                    { "id": "central", "url": "https://repo1.maven.org/maven2" },
+                    { "id": "github", "url": "https://maven.pkg.github.com/service-victoria/*", "snapshots": { "enabled": true } } }
+                  ]
+                }
+              }
+            ]
+          servers: |
+            [{ "id": "github", "username": "github", "password": "${env.GITHUB_TOKEN}" }]
+      - name: test settings.xml
+        run: cat ~/.m2/settings.xml
